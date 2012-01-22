@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -24,6 +25,7 @@ public class PersonPanel extends JPanel implements ChangeListener, KeyListener, 
 	private Person model = null;
 
 	public PersonPanel() {
+		setBorder(new EmptyBorder(10, 10, 10, 10) );
 		setLayout(new GridBagLayout());
 		gbc = new GridBagConstraints();
 		gbc.ipadx = 2;
@@ -41,6 +43,7 @@ public class PersonPanel extends JPanel implements ChangeListener, KeyListener, 
 		return this.model;
 	}
 	private void updateModel(){
+		if(this.model == null) return;
 		this.model.setName(nameField.getText());
 		this.model.setEmail(emailField.getText());
 		this.model.setDateOfBirth(birthdayField.getText());
@@ -56,11 +59,11 @@ public class PersonPanel extends JPanel implements ChangeListener, KeyListener, 
 	}
 	private void createLabels() {
 		gbc.gridx = 0;gbc.gridy = 0;
-		nameLabel = new JLabel("Name:");
+		nameLabel = new JLabel("Name:   ");
 		this.add(nameLabel, gbc);
 		
 		gbc.gridx = 0;gbc.gridy = 1;
-		emailLabel = new JLabel("Email:");
+		emailLabel = new JLabel("Email:   ");
 		this.add(emailLabel, gbc);
 
 		gbc.gridx = 0;gbc.gridy = 2;
@@ -68,16 +71,17 @@ public class PersonPanel extends JPanel implements ChangeListener, KeyListener, 
 		this.add(birthdayLabel, gbc);
 
 		gbc.gridx = 0;gbc.gridy = 3;
-		genderLabel = new JLabel("Gender:");
+		genderLabel = new JLabel("Gender: ");
 		this.add(genderLabel, gbc);
 
 		gbc.gridx = 0;gbc.gridy = 4;
-		heightLabel = new JLabel("Height:");
+		heightLabel = new JLabel("Height:  ");
 		this.add(heightLabel, gbc);
 	}
 	
 	private void createFields() {
 		gbc.gridx = 1;gbc.gridy = 0;
+		gbc.gridwidth = 3;
 		nameField = new JTextField(20);
 		nameField.addKeyListener(this);
 		this.add(nameField, gbc);
@@ -93,13 +97,19 @@ public class PersonPanel extends JPanel implements ChangeListener, KeyListener, 
 		this.add(birthdayField, gbc);
 		
 		gbc.gridx = 1;gbc.gridy = 3;
+		gbc.gridwidth = 1;
 		genderComboBox = new JComboBox(Gender.values());
 		genderComboBox.addItemListener(this);
 		this.add(genderComboBox, gbc);
 		
 		gbc.gridx = 1;gbc.gridy = 4;
+		gbc.gridwidth = 2;
 		heightSlider = new JSlider(120, 220);
 		heightSlider.addChangeListener(this);
+		heightSlider.setMajorTickSpacing(20);
+		heightSlider.setMinorTickSpacing(5);
+		heightSlider.setPaintTicks(true);
+		heightSlider.setPaintLabels(true);
 		this.add(heightSlider, gbc);
 	}
 
