@@ -1,4 +1,4 @@
-package oving2;
+package oving3;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -6,6 +6,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -16,15 +18,15 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import oving3.Person;
 
-public class PersonPanel extends JPanel implements ChangeListener, KeyListener, ItemListener {
+@SuppressWarnings("serial")
+public class PersonPanel extends JPanel implements ChangeListener, KeyListener, ItemListener, PropertyChangeListener {
 	GridBagConstraints gbc;
 	JLabel nameLabel, emailLabel, birthdayLabel, genderLabel, heightLabel;
 	JTextField nameField, emailField, birthdayField;
 	JComboBox genderComboBox;
 	JSlider heightSlider;
-	private Person model = null;
+	protected Person model = null;
 
 	public PersonPanel() {
 		setBorder(new EmptyBorder(10, 10, 10, 10) );
@@ -39,26 +41,12 @@ public class PersonPanel extends JPanel implements ChangeListener, KeyListener, 
 	
 	public void setModel(Person newPerson){
 		this.model = newPerson;
-		updateFields();
+		model.addPropertyChangeListener(this);
 	}
 	public Person getModel(){
 		return this.model;
 	}
-	private void updateModel(){
-		if(this.model == null) return;
-		this.model.setName(nameField.getText());
-		this.model.setEmail(emailField.getText());
-		this.model.setDateOfBirth(birthdayField.getText());
-		this.model.setGender((Gender) genderComboBox.getSelectedItem());
-		this.model.setHeight(heightSlider.getValue());
-	}
-	private void updateFields(){
-		nameField.setText(this.model.getName());
-		emailField.setText(this.model.getName());
-		birthdayField.setText(this.model.getName());
-		genderComboBox.setSelectedItem(this.model.getGender());
-		heightSlider.setValue(this.model.getHeight());
-	}
+	
 	private void createLabels() {
 		gbc.gridx = 0;gbc.gridy = 0;
 		nameLabel = new JLabel("Name:   ");
@@ -122,15 +110,18 @@ public class PersonPanel extends JPanel implements ChangeListener, KeyListener, 
 		genderComboBox.setName("GenderPropertyComponent");
 		heightSlider.setName("HeightPropertyComponent");
 	}
+	
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		updateModel();
+		if(this.model == null) return;
+		this.model.setHeight(heightSlider.getValue());
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		updateModel();
+		if(this.model == null) return;
+		this.model.setGender((Gender) genderComboBox.getSelectedItem());
 	}
 
 	@Override
@@ -140,15 +131,33 @@ public class PersonPanel extends JPanel implements ChangeListener, KeyListener, 
 	}
 
 	@Override
-	public void keyReleased(KeyEvent arg0) {
+	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-		updateModel();
+	public void keyReleased(KeyEvent e) {
+		if(this.model == null) return;
+		this.model.setName(nameField.getText());
+		this.model.setEmail(emailField.getText());
+		this.model.setDateOfBirth(birthdayField.getText());
 		
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent e) {
+		if (e.getPropertyName() == Person.NAME_PROPERTY) {
+			nameField.setText(model.getName());
+		} else if (e.getPropertyName() == Person.DATE_OF_BIRTH_PROPERTY) {
+			birthdayField.setText(model.getDateOfBirth());
+		} else if (e.getPropertyName() == Person.GENDER_PROPERTY) {
+			genderComboBox.setSelectedItem(model.getGender());
+		} else if (e.getPropertyName() == Person.HEIGHT_PROPERTY) {
+			heightSlider.setValue(model.getHeight());
+		} else if (e.getPropertyName() == Person.EMAIL_PROPERTY) {
+			emailField.setText(model.getEmail());
+		}
 	}
 
 

@@ -1,11 +1,17 @@
 package oving2;
 
+import oving2.Gender;
+
 public class Person {
 	private String name;
 	private String dateOfBirth;
 	private Gender gender;
 	private String email;
 	private int height;
+	
+	public Person(){
+		
+	}
 	
 	public Person(String name){
 		setName(name);
